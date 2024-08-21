@@ -1,0 +1,120 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2024-08-21 15:15+0200\n"
+"PO-Revision-Date: 2024-08-21 15:16+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: mk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.4.4\n"
+"X-Poedit-Basepath: .\n"
+
+#: woocommerce-extra-consent.php:46
+msgid "I agree to be contacted"
+msgstr "Се согласувам да бидам контактиран"
+
+#: woocommerce-extra-consent.php:64
+msgid "You must agree to the consent to proceed with the purchase."
+msgstr "Мора да се согласите со правилото пред да продолжите кон плаќање."
+
+#: woocommerce-extra-consent.php:105
+msgid "Extra Consent"
+msgstr "Дополнителна Согласност"
+
+#: woocommerce-extra-consent.php:108 woocommerce-extra-consent.php:131
+#: woocommerce-extra-consent.php:228
+msgid "Uncontacted Clients"
+msgstr "Неконтактирани купувачи"
+
+#: woocommerce-extra-consent.php:109 woocommerce-extra-consent.php:132
+#: woocommerce-extra-consent.php:289
+msgid "Contacted Clients"
+msgstr "Контактирани купувачи"
+
+#: woocommerce-extra-consent.php:110 woocommerce-extra-consent.php:133
+msgid "Settings"
+msgstr "Поставки"
+
+#: woocommerce-extra-consent.php:129
+msgid "Extra Consent Settings"
+msgstr "Дополнителна Согласност - поставки"
+
+#: woocommerce-extra-consent.php:155
+msgid ""
+"Extra Consent is an plugin that allows you to display an additional consent "
+"request on the Checkout page (for example for Viber membership, WhatsApp "
+"group or similar).<br>In Settings you can: set the text of the consent you "
+"are looking for; to determine whether the request will be mandatory or not "
+"(initially it is set to NOT be mandatory, but if you decide that it is "
+"mandatory then it will not be possible to proceed to payment until consent "
+"is given); to set an error message that will appear if the user has not "
+"given consent (appears only if the request is mandatory).<br>If the buyer "
+"agrees, then his data is automatically filled in the Uncontacted table. And "
+"when a buyer is contacted (or added to a group or otherwise processed) then "
+"just click on the checkbox next to his data and he will automatically move "
+"to the Contacted table.<br>Both tables also show the agreement that they "
+"entered into, so that if the text of the agreement you are looking are "
+"changed, you can know what the buyer agreed to.<br>If the user's email is "
+"already registered in the plugin database, then this additional field will "
+"no longer be displayed."
+msgstr ""
+"Дополнителна Согласност е додавка која ви овозможува на страницата за "
+"Наплата да прикажете дополнително барање согласност (на пример за членство "
+"во Вибер, Вацап група или слично).<br>Во Поставки можете: да го поставите "
+"текстот на согласноста која ја барате; да одредите дали барањето ќе биде "
+"задолжително или не (во старт е поставено да не е задолжително, но ако "
+"одлучите да е задолжително тогаш нема да може да се продолжи кон плаќање "
+"додека не се даде согласност); да поставите порака за грешка која ќе се "
+"појави ако корисникот не дал согласност (се појавува само ако барањето е "
+"задолжително).<br>Ако се согласи купувачот, тогаш неговите податоци "
+"автоматски се пополнуваат во табелата Неконтактирани. А кога некој купувач "
+"ќе биде контактиран (или додаден во група или на друг начин обработен) тогаш "
+"само кликнете на чекбоксот покрај неговите податоци и тој автоматски ќе се "
+"префрли во табелата Контактирани.<br>И во двете табели се прикажува и "
+"согласноста на која се нафатиле, за да може ако се менува текстот на "
+"согласноста која ја барате, да се знае на што се согласил кој купувач."
+"<br>Ако мејлот на корисникот е веќе запишан во базата на податоци за "
+"додавкава, тогаш нема да му се прикаже веќе ова дополнително поле."
+
+#: woocommerce-extra-consent.php:173
+msgid "Main Settings"
+msgstr "Главни поставки"
+
+#: woocommerce-extra-consent.php:180
+msgid "Consent Text"
+msgstr "Текст на барањето согласност"
+
+#: woocommerce-extra-consent.php:188
+msgid "Is Consent Required?"
+msgstr "Дали е барањето задолжително?"
+
+#: woocommerce-extra-consent.php:196
+msgid "Custom Error Message"
+msgstr "Порака која би се прикажала ако не се прифати задолжителното барање"
+
+#: woocommerce-extra-consent.php:230 woocommerce-extra-consent.php:291
+msgid "First Name"
+msgstr "Име"
+
+#: woocommerce-extra-consent.php:231 woocommerce-extra-consent.php:292
+msgid "Last Name"
+msgstr "Презиме"
+
+#: woocommerce-extra-consent.php:232 woocommerce-extra-consent.php:293
+msgid "Email"
+msgstr "Е-пошта"
+
+#: woocommerce-extra-consent.php:233 woocommerce-extra-consent.php:294
+msgid "Phone"
+msgstr "Телефон"
+
+#: woocommerce-extra-consent.php:234 woocommerce-extra-consent.php:295
+msgid "Consent Message"
+msgstr "Прифатена согласност"
+
+#: woocommerce-extra-consent.php:235
+msgid "Contacted"
+msgstr "Контактиран"
