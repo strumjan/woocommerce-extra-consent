@@ -9,7 +9,7 @@
  * Requires Plugins: woocommerce
 */
 
-// Активирање на додавката
+// Register activation hook
 register_activation_hook(__FILE__, 'wec_install');
 
 // Load plugin text domain for translations
@@ -18,7 +18,7 @@ function woocommerce_extra_consent_textdomain() {
     load_plugin_textdomain('woocommerce-extra-consent', false, dirname(plugin_basename(__FILE__)) . '/languages');
 }
 
-// Креирање на табела за клиенти
+// Create table in database
 function wec_install() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'wec_clients';
@@ -39,26 +39,42 @@ function wec_install() {
     dbDelta($sql);
 }
 
-// Додавање на чекбоксот на страницата за плаќање
+// Add checkbox to Checkout page
 add_action('woocommerce_review_order_before_submit', 'wec_add_consent_checkbox', 10);
 function wec_add_consent_checkbox() {
     $options = get_option('wec_options');
     $consent_text = isset($options['consent_text']) ? $options['consent_text'] : __('I agree to be contacted', 'woocommerce-extra-consent');
 
-    echo '<p class="form-row">
-        <label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox">
+    echo '<div id="consent-checkbox-field">
+        <label class="woocommerce-form__label woocommerce-form__label-for-checkbox checkbox" id="consent-checkbox-label" for="wec_consent">
             <input type="checkbox" class="woocommerce-form__input woocommerce-form__input-checkbox input-checkbox" name="wec_consent" id="wec_consent" /> 
             <span>' . esc_html($consent_text) . '</span>
         </label>
-    </p>';
+    </div>';
 }
 
-// Проверката на чекбоксот пред плаќање
+// Check checkbox before payment
 function wec_validate_checkout_fields() {
+    global $wpdb;
+
+    // Податоци од поставките
     $options = get_option('wec_options');
     $consent_required = isset($options['consent_required']) ? (bool) $options['consent_required'] : false;
 
-    if ($consent_required && empty($_POST['wec_consent'])) {
+    // Претходно внесен мејл на купувачот
+    $email = isset($_POST['billing_email']) ? sanitize_email($_POST['billing_email']) : '';
+    $consent_message = isset($options['consent_text']) ? $options['consent_text'] : '';
+
+    // Проверка дали мејлот и согласноста се веќе во базата
+    $result = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}wec_clients WHERE email = %s AND consent_message = %s",
+            $email, $consent_message
+        )
+    );
+
+    // Ако согласноста е задолжителна и не е чекирана, а мејлот не е во базата
+    if ($consent_required && empty($_POST['wec_consent']) && !$result) {
         $custom_error_message = $options['wec_custom_error_message'];
         if (empty($custom_error_message)) {
             wc_add_notice(__('You must agree to the consent to proceed with the purchase.', 'woocommerce-extra-consent'), 'error');
@@ -69,8 +85,7 @@ function wec_validate_checkout_fields() {
 }
 add_action('woocommerce_checkout_process', 'wec_validate_checkout_fields');
 
-
-// Зачувување на податоците на клиентите во базата
+// Save client in database
 add_action('woocommerce_checkout_order_processed', 'wec_save_consent_data', 10, 1);
 function wec_save_consent_data($order_id) {
     if (isset($_POST['wec_consent'])) {
@@ -98,24 +113,19 @@ function wec_save_consent_data($order_id) {
     }
 }
 
-// Администраторска страница за поставки
+// Settings for admin page
 add_action('admin_menu', 'wec_admin_menu');
 function wec_admin_menu() {
-    // Првото подмени ќе биде главно мени
     add_menu_page(__('Extra Consent', 'woocommerce-extra-consent'), __('Extra Consent', 'woocommerce-extra-consent'), 'manage_options', 'wec-uncontacted-clients', 'wec_render_tabs', 'dashicons-yes', 56);
 
-    // Подменија за останатите опции
     add_submenu_page('wec-uncontacted-clients', __('Uncontacted Clients', 'woocommerce-extra-consent'), __('Uncontacted Clients', 'woocommerce-extra-consent'), 'manage_options', 'wec-uncontacted-clients', 'wec_render_tabs');
     add_submenu_page('wec-uncontacted-clients', __('Contacted Clients', 'woocommerce-extra-consent'), __('Contacted Clients', 'woocommerce-extra-consent'), 'manage_options', 'wec-contacted-clients', 'wec_render_tabs');
     add_submenu_page('wec-uncontacted-clients', __('Settings', 'woocommerce-extra-consent'), __('Settings', 'woocommerce-extra-consent'), 'manage_options', 'wec-settings', 'wec_render_tabs');
 }
 
-
-
 function wec_render_tabs() {
     $tab = isset($_GET['page']) ? $_GET['page'] : 'uncontacted';
 
-    // Прилагодување на активниот таб
     if ($tab == 'wec-uncontacted-clients') {
         $active_tab = 'uncontacted';
     } elseif ($tab == 'wec-contacted-clients') {
@@ -134,7 +144,6 @@ function wec_render_tabs() {
         </h2>
         <div class="tab-content">
             <?php
-            // Врз основа на активниот таб, го рендерираме соодветниот дел од интерфејсот
             if ($active_tab == 'settings') {
                 wec_settings_page();
             } elseif ($active_tab == 'uncontacted') {
@@ -148,7 +157,7 @@ function wec_render_tabs() {
     <?php
 }
 
-// Формата за поставки
+// View Settings
 function wec_settings_page() {
     ?>
     <div class="wrap">
@@ -164,7 +173,7 @@ function wec_settings_page() {
     <?php
 }
 
-// Регистрација на поставки
+// Register settings
 add_action('admin_init', 'wec_register_settings');
 function wec_register_settings() {
     register_setting('wec_settings_group', 'wec_options');
@@ -219,7 +228,7 @@ function wec_custom_error_message_field() {
 }
 
 
-// Табеларен приказ на неконтактирани клиенти
+// View Uncontacted
 function wec_uncontacted_clients_page() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'wec_clients';
@@ -249,7 +258,7 @@ function wec_uncontacted_clients_page() {
     echo '</tbody></table></div>';
 }
 
-// Скрипта за ажурирање на статусот контактиран
+// Script for status contacted
 function wec_update_contacted() {
     ?>
     <script>
@@ -271,7 +280,7 @@ function wec_update_contacted() {
 }
 add_action('admin_footer', 'wec_update_contacted');
 
-// AJAX за ажурирање на статусот контактиран
+// AJAX for update status contacted
 add_action('wp_ajax_wec_mark_contacted', 'wec_mark_contacted');
 function wec_mark_contacted() {
     global $wpdb;
@@ -280,7 +289,7 @@ function wec_mark_contacted() {
     wp_die();
 }
 
-// Табеларен приказ на контактирани клиенти
+// View Contacted
 function wec_contacted_clients_page() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'wec_clients';
@@ -307,4 +316,39 @@ function wec_contacted_clients_page() {
 
     echo '</tbody></table></div>';
 }
+
+// Check email and consent message
+add_action('wp_ajax_wec_check_email_consent', 'wec_check_email_consent');
+add_action('wp_ajax_nopriv_wec_check_email_consent', 'wec_check_email_consent');
+
+function wec_check_email_consent() {
+    global $wpdb;
+
+    $email = isset($_POST['email']) ? sanitize_email($_POST['email']) : '';
+    $consent_message = isset($_POST['consent_message']) ? sanitize_text_field($_POST['consent_message']) : '';
+
+    $result = $wpdb->get_row(
+        $wpdb->prepare(
+            "SELECT * FROM {$wpdb->prefix}wec_clients WHERE email = %s AND consent_message = %s",
+            $email, $consent_message
+        )
+    );
+
+    if ($result) {
+        wp_send_json_success(['hide_consent_field' => true]);
+
+    } else {
+        wp_send_json_success(['hide_consent_field' => false]);
+    }
+}
+
+// Add script
+add_action('wp_enqueue_scripts', 'wec_enqueue_scripts');
+
+function wec_enqueue_scripts() {
+    if (is_checkout()) {
+        wp_enqueue_script('woocommerce_extra_consent', plugins_url('/woocommerce-extra-consent.js', __FILE__), array('jquery'), null, true);
+    }
+}
+
 ?>
