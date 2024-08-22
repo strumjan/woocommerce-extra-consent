@@ -283,6 +283,8 @@ add_action('admin_footer', 'wec_update_contacted');
 // AJAX for update status contacted
 add_action('wp_ajax_wec_mark_contacted', 'wec_mark_contacted');
 function wec_mark_contacted() {
+    if( !current_user_can('administrator') ) wp_die();
+    
     global $wpdb;
     $client_id = intval($_POST['client_id']);
     $wpdb->update($wpdb->prefix . 'wec_clients', array('contacted' => 1), array('id' => $client_id));
