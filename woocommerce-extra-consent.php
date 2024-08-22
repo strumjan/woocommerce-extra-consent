@@ -63,7 +63,7 @@ function wec_validate_checkout_fields() {
 
     // Претходно внесен мејл на купувачот
     $email = isset($_POST['billing_email']) ? sanitize_email($_POST['billing_email']) : '';
-    $consent_message = isset($options['consent_text']) ? $options['consent_text'] : '';
+    $consent_message = isset($options['consent_text']) ? esc_html($options['consent_text']) : '';
 
     // Проверка дали мејлот и согласноста се веќе во базата
     $result = $wpdb->get_row(
@@ -97,7 +97,7 @@ function wec_save_consent_data($order_id) {
         $email = $order->get_billing_email();
         $phone = $order->get_billing_phone();
         $options = get_option('wec_options');
-        $consent_message = $options['consent_text'];
+        $consent_message = esc_html($options['consent_text']);
 
         $wpdb->insert(
             $wpdb->prefix . 'wec_clients',
