@@ -260,6 +260,7 @@ function wec_uncontacted_clients_page() {
 
 // Script for status contacted
 function wec_update_contacted() {
+    if (current_user_can('subscriber')) wp_die();
     ?>
     <script>
         function wec_update_contacted(client_id) {
